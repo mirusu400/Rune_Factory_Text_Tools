@@ -1,4 +1,16 @@
 # -*- coding:utf-8 -*-
+"""
+구조
+바이너리 파일 중 0xC 를 통해 시작 주소를 찾은후(foundoffset)
+룬팩토리 파일은 00을 기준으로 대사가 나뉘므로
+00이 있는 글자를 하나하나 찾아갑니다
+
+00이 없을경우 shortoffset을 1씩 증가하면서 찾고
+00을 찾을경우 닫은후 다시 열어서 시작주소로 간후
+shortoffset만큼 대사를 추출한후
+longoffset에 shortoffset만큼 더한후 다시 그것을 시작주소로 만듭니다
+"""
+
 global readfile
 global writefile
 import sys

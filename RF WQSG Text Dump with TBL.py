@@ -8,6 +8,7 @@ global TBLhex
 
 import sys
 
+
 def foundoffset(inFp):
     blank=[]
     inFp = open(readfile, "rb")
