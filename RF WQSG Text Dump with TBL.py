@@ -20,29 +20,16 @@ import sys
 
 
 def foundoffset(inFp):
-    blank=[]
     inFp = open(readfile, "rb")
     inFp.read(0xC)
-    for i in range(1,5):
-        startpath=inFp.read(1)
-        temp=hex(ord(startpath))
-        if(temp=="0x0"):
-            temp="0x00"
-        blank.append(temp) #각각 읽어 blank에 추가
-    blank.reverse() #리틀엔디안->빅엔디안
-    pointer=""
-    pointer += blank[0]
-    pointer += blank[1]
-    pointer += blank[2]
-    pointer += blank[3]
-    pointer=pointer.replace("0x","")
-    result="0x"+pointer
+    result=little_end_to_big_end(inFp)
     inFp.close()
     return int(result,16)
-def romlength():
+
+def little_end_to_big_end(inFpset):
     blank=[]
     for i in range(1,5):
-        startpath=inFp3.read(1)
+        startpath=inFpset.read(1)
         temp=hex(ord(startpath))
         if(temp=="0x0"):
             temp="0x00"
@@ -88,59 +75,17 @@ def romlength():
     result=""
     result+=pointer
     result=result.upper()
+    return result
+
+def romlength():
+    result = little_end_to_big_end(inFp3)
     result=int(result,16)
     return result
+
 def nextoffset(nextoffset):
     blank=[]
     inFp3.read(nextoffset)
-    for i in range(1,5):
-        startpath=inFp3.read(1)
-        temp=hex(ord(startpath))
-        if(temp=="0x0"):
-            temp="0x00"
-        if(temp=="0x1"):
-            temp="0x01"
-        if(temp=="0x2"):
-            temp="0x02"
-        if(temp=="0x3"):
-            temp="0x03"
-        if(temp=="0x4"):
-            temp="0x04"
-        if(temp=="0x5"):
-            temp="0x05"
-        if(temp=="0x6"):
-            temp="0x06"
-        if(temp=="0x7"):
-            temp="0x07"
-        if(temp=="0x8"):
-            temp="0x08"
-        if(temp=="0x9"):
-            temp="0x09"
-        if(temp=="0xa"):
-            temp="0x0A"
-        if(temp=="0xb"):
-            temp="0x0B"
-        if(temp=="0xc"):
-            temp="0x0C"
-        if(temp=="0xd"):
-            temp="0x0D"
-        if(temp=="0xe"):
-            temp="0x0E"
-        if(temp=="0xf"):
-            temp="0x0F"
-        blank.append(temp) #각각 읽어 blank에 추가
-
-    blank.reverse() #리틀엔디안->빅엔디안
-    pointer=""
-    pointer += blank[0]
-    pointer += blank[1]
-    pointer += blank[2]
-    pointer += blank[3]
-    pointer=pointer.replace("0x","")
-    result=""
-    result+=pointer
-    result=result.upper()
-
+    result = little_end_to_big_end(inFp3)
     return result
 
 def tableread():
@@ -172,7 +117,7 @@ inFp=0
 texts=[]
 
 
-DEBUG=1 #---------------------디버그 이용
+DEBUG=0 #---------------------디버그 이용
 
 
 
@@ -188,11 +133,16 @@ DEBUG=1 #---------------------디버그 이용
 if (DEBUG == 1):  # ------------------디버그가 1일 경우 shortoffset 대신 롬파일에서 읽어옵니다!
     print("YOU ARE IN DEBUG MODE! READ LENGTH FROM ROM")
     time.sleep(1.5)
+
+#------------------init-----------------------------
 longoffset=0 #시작부터 끝까지 0으로 초기화가 안됨 - 시작되는 어드레스를 뜻합니다
 shortoffset=0 #한번 찾으면 바로 초기화 - 총 길이를 뜻합니다
 lengthoffset=0
 TBLword = [] #테이블 파일중 단어
 TBLhex = [] #테이블 파일중 16진수값
+#---------------------------------------------------
+
+
 startoffset=foundoffset(inFp) #오프셋찾기(0x0c)
 tableread() #테이블파일읽기
 inFp=open(readfile,"rb")
