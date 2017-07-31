@@ -205,6 +205,7 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
         result=result[2:-1]
         foundregester=0
         lenresult=result
+        result=result.replace("\\'","'")
         for i in range(0,len(lenresult)): #대사에서 TBL에 있는 것들을 검색해야합니다.
             i +=(foundregester*(-1))
             try:
@@ -226,7 +227,7 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
                         if (check == 0):
                             talk = "TBL FILE CANNOT FOUND HEX CODES IN SCRPIT!"
                             talk += tblresult
-
+                            time.sleep(12)
                             print(talk)
                             break
                         temp0=result[0:i] #문자열을 두 부분으로 나눈다음 가운데를 방금 찾은 테이블표 값을 입력한후 다시 합칩니다.
