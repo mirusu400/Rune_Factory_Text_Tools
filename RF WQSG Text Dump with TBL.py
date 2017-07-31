@@ -9,7 +9,11 @@
 끌 경우에는 이 프로그램 내에서 일일히 하나하나 셉니다
 자세한 것은 아래 주석을 참고하세요./
 """
-
+"""
+주의!!!
+추출했을때 \n 은 줄띄는 제어코드로 "0A" 입니다
+삽입시 이를 replace 해야될겁니다.
+"""
 global readfile
 global writefile
 global tablefile
@@ -76,6 +80,7 @@ def little_end_to_big_end(inFpset):
     result+=pointer
     result=result.upper()
     return result
+
 
 def romlength():
     result = little_end_to_big_end(inFp3)
@@ -146,7 +151,7 @@ TBLhex = [] #테이블 파일중 16진수값
 startoffset=foundoffset(inFp) #오프셋찾기(0x0c)
 tableread() #테이블파일읽기
 inFp=open(readfile,"rb")
-outFp=open(writefile,"w",encoding='utf-16-le')
+outFp=open(writefile,"w",encoding='utf-8')
 inFp3 = open(readfile, "rb")
 
 inFp3.read(0xC)
@@ -226,12 +231,13 @@ while True:
         a=str(a)
         if(DEBUG == 1):
             shortoffset = lengthoffset
+        print(resultoffset)
         print(result)
-        outFp.write(str(resultoffset)) #시작오프셋
+        outFp.write(resultoffset) #시작오프셋
         outFp.write(",")
         outFp.write(str(shortoffset)) #길이
         outFp.write(",")
-        outFp.write(result)
+        outFp.write(str(result))
         outFp.write("\n")
         a=inFp.read(1)
         shortoffset = 0  # 대사길이 초기화
