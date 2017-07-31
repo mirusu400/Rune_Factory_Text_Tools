@@ -190,6 +190,7 @@ if (DEBUG == 1):  # ------------------디버그가 1일 경우 shortoffset 대�
     time.sleep(1.5)
 longoffset=0 #시작부터 끝까지 0으로 초기화가 안됨 - 시작되는 어드레스를 뜻합니다
 shortoffset=0 #한번 찾으면 바로 초기화 - 총 길이를 뜻합니다
+lengthoffset=0
 TBLword = [] #테이블 파일중 단어
 TBLhex = [] #테이블 파일중 16진수값
 startoffset=foundoffset(inFp) #오프셋찾기(0x0c)
@@ -197,15 +198,22 @@ tableread() #테이블파일읽기
 inFp=open(readfile,"rb")
 outFp=open(writefile,"w",encoding='utf-16-le')
 inFp3 = open(readfile, "rb")
+
 inFp3.read(0xC)
 
+
 s = inFp.read(startoffset)
+if (DEBUG == 1):
+    inFp3.close()
+    inFp3 = open(readfile, "rb")
+    inFp3.read(0x8)
+
 lenscrpit=0
 
 while True:
     if s == '':
         break
-    s = inFp.read(1)
+    s = inFp.read(1) #한칸한칸 읽어 대사의 마지막까지 검사합니다.
     if (len(s)==0):
         break
     if s == '':
@@ -213,11 +221,16 @@ while True:
     if(ord(s)==00): #마지막일경우
         result=""
         if(lenscrpit==0):
-            resultoffset = nextoffset(0)
+            if(DEBUG==0):
+                resultoffset = nextoffset(0)
+            else: # ------------------디버그가 1일 경우 shortoffset 대신 롬파일에서 읽어옵니다!
+                lengthoffset = romlength()  # 길이 = 롬에서 읽어옴
+                resultoffset=nextoffset(0) #디버그가 1일경우 nextoffset을 4칸 건너뛴 곳에서 하지않고, 바로 읽어야합니다.
         else:
             if(DEBUG==0):
                 resultoffset=nextoffset(4)
-            else:
+            else: # ------------------디버그가 1일 경우 shortoffset 대신 롬파일에서 읽어옵니다!
+                lengthoffset = romlength()  # 길이 = 롬에서 읽어옴
                 resultoffset=nextoffset(0) #디버그가 1일경우 nextoffset을 4칸 건너뛴 곳에서 하지않고, 바로 읽어야합니다.
         lenscrpit += 1
         inFp2 = open(readfile, "rb")
@@ -261,9 +274,8 @@ while True:
             length += 1
         longoffset+=shortoffset+1 #방금까지 오프셋 추가
         a=str(a)
-        if(DEBUG == 1): #------------------디버그가 1일 경우 shortoffset 대신 롬파일에서 읽어옵니다!
-            shortoffset = romlength() #길이 = 롬에서 읽어옴
-
+        if(DEBUG == 1):
+            shortoffset = lengthoffset
         print(result)
         outFp.write(str(resultoffset)) #시작오프셋
         outFp.write(",")
