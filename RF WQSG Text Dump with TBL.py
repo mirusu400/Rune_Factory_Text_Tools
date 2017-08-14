@@ -197,9 +197,9 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
     for kig in range(0,looptime):
         inFp = open(readfile, "rb")
 
-        length = int(little_end_to_big_end(inFp3), 16)
-        address = int(little_end_to_big_end(inFp3), 16)
-        inFp.read(address)
+        length = int(little_end_to_big_end(inFp3), 16) #롬의 길이를 읽어냅니다
+        address = int(little_end_to_big_end(inFp3), 16) #롬의 주소값을 알아냅니다
+        inFp.read(address) #열었다 닫았따 하기때문에 바로 주소에서 읽어내도 상관이 없습니다
         result=inFp.read(length)
         result=str(result)
         result=result[2:-1]
@@ -207,31 +207,37 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
         lenresult=result
         result=result.replace("\\'","'")
         for i in range(0,len(lenresult)): #대사에서 TBL에 있는 것들을 검색해야합니다.
-            i +=(foundregester*(-1))
+            #i +=(foundregester*(-1))
             try:
                 if((result[i]) == ('\\') and not result[i:i+2] == ('\\n')): #검색한것이 줄띄어쓰기가 아니고 ASCII코드에 없는경우
                     if not(result[i:i+4] == str('\\x00')) and not (result[i:i+4] == "\\xc") and not (result[i:i+4]==str(b'\xa0')): #특수한 경우를 제외합니다
-                        foundregester+=1
-                        tblresult = ""  # tbl 찾는값
-                        tblresult = result[i:i+12]
-                        tblresult = tblresult.replace("'", "")
-                        tblresult = tblresult.replace("x", "")
-                        tblresult = tblresult.replace("\\", "")
-                        tblresult = tblresult.upper()  # 테이블 파일을 읽기위해 3바이트 HEX로 치환
-                        check = 0
-                        for k in range(0, len(TBLhex)):  # 3바이트 HEX가 테이블파일에 있는지 검사
-                            if (tblresult == str(TBLhex[k])):
-                                tblresult = str(TBLword[k])
-                                check = 1
+
+                        #------------------3바이트, 2바이트, 1바이트 차례를 읽어와 테이블과 대조해야합니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        foundregester+=1 #왜 추가해야되는지 몰겠어요 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ
+                        for t in range(0,3):
+                            tblresult = ""  # tbl 찾는값
+                            tblresult = result[i:i + (12-4*t)] #3바이트 2바이트 1바이트 차례로 읽어옴 읽어오기
+                            tblresult = tblresult.replace("'", "")
+                            tblresult = tblresult.replace("x", "")
+                            tblresult = tblresult.replace("\\", "")
+                            tblresult = tblresult.upper()  # 테이블 파일을 읽기위해 3바이트 HEX로 치환
+                            check = 0
+                            for k in range(0, len(TBLhex)):  # 3바이트 HEX가     테이블파일에 있는지 검사
+                                if (tblresult == str(TBLhex[k])):
+                                    tblresult = str(TBLword[k])
+                                    check = 1
+                                    break
+                            if(check==1):
                                 break
                         if (check == 0):
-                            talk = "TBL FILE CANNOT FOUND HEX CODES IN SCRPIT!"
+                            talk = "TBL FILE CANNOT FOUND HEX CODES IN SCRPIT! HEX CODE ::  "
                             talk += tblresult
-                            time.sleep(12)
                             print(talk)
+                            print("10초 후 계속됩니다.")
+                            time.sleep(10)
                             break
                         temp0=result[0:i] #문자열을 두 부분으로 나눈다음 가운데를 방금 찾은 테이블표 값을 입력한후 다시 합칩니다.
-                        temp1=result[i+12:len(result)]
+                        temp1=result[i+12-4*t:len(result)]
                         result=""
                         result+=temp0
                         result+=tblresult
@@ -242,6 +248,23 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
             except:
                 break
         print(result)
+        address=str(hex(address))
+        address=address.replace("x","")
+        address=address.upper()
+        if(len(address)==1):
+            address="0000000"+address
+        if(len(address)==2):
+            address="000000"+address
+        if(len(address)==3):
+            address="00000"+address
+        if(len(address)==4):
+            address="0000"+address
+        if(len(address)==5):
+            address="000"+address
+        if(len(address)==6):
+            address="00"+address
+        if(len(address)==7):
+            address="0"+address
         outFp.write(str(address))  # 시작오프셋
         outFp.write(",")
         outFp.write(str(length))  # 길이
