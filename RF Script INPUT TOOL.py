@@ -15,7 +15,6 @@ global tablefile
 global inFp3
 global outFp
 def string_hex_to_hex(temps): #string안에 저장된 hex값을 읽어와 쓰게해줍니다.
-    print(int(len(temps)/2))
     for i in range(0, int(len(temps)/2)):
 
         outtemp = int(temps[i * 2:i * 2 + 2], 16)
@@ -69,25 +68,30 @@ def big_to_little_end(tempinput): #빅 엔디안으로 계산된걸 룬팩토리
     output=output.upper()
 
     return output
+result=0
+lastresult=0
+texts=[]
+INSERT_TEXT_TABLE=[]
+INSERT_TEXT=""
+TBLword = [] #테이블 파일중 단어
+TBLhex = [] #테이블 파일중 16진수값
+
+WQSG = 1 #-----------------------------------------------------WQSG사용을 하는경우 반드시 1로 설정해주세요
 
 
-#readfile=sys.argv[1]
-readfile="C:\\Users\\Jun Fac porta03\\Desktop\\rf2TxtCalendar.txt"
+readfile=sys.argv[1]
+#readfile="C:\\Users\\Jun Fac porta03\\Desktop\\rf2TxtCalendar.txt"
 
 try:
     writefile = sys.argv[2]
 except:
     writefile=readfile
     writefile+=".out"
-#tablefile=sys.argv[3]
-tablefile="수정UTF_수정_실전_대사삽입용.tbl"
+tablefile=sys.argv[3]
+#tablefile="수정UTF_수정_실전_대사삽입용.tbl"
 inFp=open(readfile,"r",encoding="utf-8")
 outFp=open(writefile,"wb")
 
-texts=[]
-TBLword = [] #테이블 파일중 단어
-TBLhex = [] #테이블 파일중 16진수값
-WQSG = 1 #-----------------------------------------------------WQSG사용을 하는경우 반드시 1로 설정해주세요
 
 tableread() #테이블파일읽기
 tpcountline=countline() # 총 라인수(불변)
@@ -103,41 +107,51 @@ string_hex_to_hex(lentexts) #------------------------------텍스트의 총 갯�
 #--------------inFp를 읽으면서 한 글자씩 써야 합니다
 print(tpcountline)
 for a in range(0,tpcountline):
-	openline=inFp.readline()
-	print(openline)
-	if(WQSG == 1):
-		templines=openline.split(",")
-		print(templines)
-		openline=""
-		for i in range(0,len(templines)-2):
-			openline+=templines[i+2] #--------------앞의 두개의 ,를 생략해 저장합니다(WQSG 대비)
-			openline+=","
-	openline=openline.replace("\n","")
-	openline=openline[0:-1]
-	print(openline)
-	result=0
-
-	for i in range(0,len(openline)):
-		for k in range(0,len(TBLword)):
-			if(openline[i] == TBLword[k]):
-				result+=len(TBLhex[k])/2
-				print(int(result))
-	print("result")
-	print(result)
-	time.sleep(2)
-	string_hex_to_hex((big_to_little_end(str(hex(int(result)))[2:]))) #-------------최종 결과값을 결과에 씁니다
-	if(a == 0):
-		tempcountline=hex(tpcountline * 8+8) #첫번째 오프셋 계산()
-		print(tempcountline)
-		countlineresult=big_to_little_end(str(tempcountline)[2:]) #-------------첫번째 오프셋의 경우 직접 계산합니다
-		string_hex_to_hex(countlineresult)
-	else:
-		print((tempcountline[2:]))
-
-		print(int(tempcountline,16)) #hex값을 10진수로 변환(작동x)
-		tempcountline=hex(int(tempcountline,16)+(int(result))) #hex값을 10진수로 계산해 더한다음 다시 16진수로 변환한후 이를 ROM에 기록
-		print(tempcountline)
-		time.sleep(100000)
+#for a in range(0,5):
+    openline=inFp.readline()
+    print(openline)
+    if(WQSG == 1):
+        templines=openline.split(",")
+        print(templines)
+        openline=""
+        for i in range(0,len(templines)-2):
+            openline+=templines[i+2] #--------------앞의 두개의 ,를 생략해 저장합니다(WQSG 대비)
+            openline+=","
+    openline=openline.replace("\n","")
+    openline=openline[0:-1]
+    print(openline)
+    lastresult = result
+    result=0
+    INSERT_TEXT=""
+    for i in range(0,len(openline)):
+        for k in range(0,len(TBLword)):
+            if(openline[i] == TBLword[k]):
+                result+=len(TBLhex[k])/2
+                INSERT_TEXT+=TBLhex[k]
+                break
+    INSERT_TEXT+="00"
+    print(INSERT_TEXT)
 
 
-time.sleep(1)
+    #print("DEBUG")
+    #print(int(result))
+    #print(hex(#int(result)))
+    string_hex_to_hex((big_to_little_end(str(hex(int(result)))[2:]))) #-------------최종 결과값(대사길이)을 결과에 씁니다
+    if(a == 0):
+        tempcountline=hex(tpcountline * 8+8) #대사시작 오프셋 계산()
+        countlineresult=big_to_little_end(str(tempcountline)[2:]) #-------------첫번째 오프셋의 경우 직접 계산합니다
+        string_hex_to_hex(countlineresult)
+    else:
+        tempcountline=hex(int(tempcountline,16)+(int(lastresult))+1) #hex값을 10진수로 계산해 더한다음 다시 16진수로 변환한후 이를 ROM에 기록 ★★★★★ 맨뒤에 00까지 다음포인터 계산때 필요하기때문에 1을 더합니다!!!!!!!!!!!!!!!!!!!!
+        countlineresult=big_to_little_end(str(tempcountline)[2:])
+        string_hex_to_hex(countlineresult)
+    INSERT_TEXT_TABLE.append(INSERT_TEXT)
+print("DONE")
+for b in range(0,tpcountline):
+    print(b)
+    print(INSERT_TEXT_TABLE[b])
+    string_hex_to_hex(INSERT_TEXT_TABLE[b])
+
+
+
+
