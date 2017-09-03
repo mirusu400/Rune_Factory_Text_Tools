@@ -75,8 +75,8 @@ INSERT_TEXT_TABLE=[]
 INSERT_TEXT=""
 TBLword = [] #테이블 파일중 단어
 TBLhex = [] #테이블 파일중 16진수값
-
-WQSG = 1 #-----------------------------------------------------WQSG사용을 하는경우 반드시 1로 설정해주세요
+RUNE_FACTORY_3 =1#------------------------------------------------------룬팩 3을 하는경우 체크!
+WQSG = 0 #-----------------------------------------------------WQSG사용을 하는경우 반드시 1로 설정해주세요
 
 
 readfile=sys.argv[1]
@@ -109,6 +109,8 @@ print(tpcountline)
 for a in range(0,tpcountline):
 #for a in range(0,5):
     openline=inFp.readline()
+    openline = openline.replace(u"\ufeff", '') #BOM 고유오류 수정
+    openline = openline.replace("\\n",'|')
     print(openline)
     if(WQSG == 1):
         templines=openline.split(",")
@@ -118,18 +120,24 @@ for a in range(0,tpcountline):
             openline+=templines[i+2] #--------------앞의 두개의 ,를 생략해 저장합니다(WQSG 대비)
             openline+=","
     openline=openline.replace("\n","")
-    openline=openline[0:-1]
+    #openline=openline[0:-1]
     print(openline)
     lastresult = result
     result=0
     INSERT_TEXT=""
     for i in range(0,len(openline)):
-        for k in range(0,len(TBLword)):
-            if(openline[i] == TBLword[k]):
-                result+=len(TBLhex[k])/2
-                INSERT_TEXT+=TBLhex[k]
-                break
+        if((openline[i])=="|"):
+            result+=1
+            INSERT_TEXT+="0A" #줄넘김 을 일부러 수정했습니다
+        else:
+            for k in range(0,len(TBLword)):
+                if(openline[i] == TBLword[k]):
+                    result+=len(TBLhex[k])/2
+                    INSERT_TEXT+=TBLhex[k]
+                    break
     INSERT_TEXT+="00"
+    if(RUNE_FACTORY_3==1):
+        INSERT_TEXT+="00"
     print(INSERT_TEXT)
 
 
@@ -142,14 +150,14 @@ for a in range(0,tpcountline):
         countlineresult=big_to_little_end(str(tempcountline)[2:]) #-------------첫번째 오프셋의 경우 직접 계산합니다
         string_hex_to_hex(countlineresult)
     else:
-        tempcountline=hex(int(tempcountline,16)+(int(lastresult))+1) #hex값을 10진수로 계산해 더한다음 다시 16진수로 변환한후 이를 ROM에 기록 ★★★★★ 맨뒤에 00까지 다음포인터 계산때 필요하기때문에 1을 더합니다!!!!!!!!!!!!!!!!!!!!
+
+        tempcountline=hex(int(tempcountline,16)+(int(lastresult))+1+RUNE_FACTORY_3) #hex값을 10진수로 계산해 더한다음 다시 16진수로 변환한후 이를 ROM에 기록 ★★★★★ 맨뒤에 00까지 다음포인터 계산때 필요하기때문에 1을 더합니다!!!!!!!!!!!!!!!!!!!!
         countlineresult=big_to_little_end(str(tempcountline)[2:])
         string_hex_to_hex(countlineresult)
     INSERT_TEXT_TABLE.append(INSERT_TEXT)
 print("DONE")
 for b in range(0,tpcountline):
-    print(b)
-    print(INSERT_TEXT_TABLE[b])
+
     string_hex_to_hex(INSERT_TEXT_TABLE[b])
 
 

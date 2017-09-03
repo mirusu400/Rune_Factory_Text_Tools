@@ -267,11 +267,11 @@ if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
             address="00"+address
         if(len(address)==7):
             address="0"+address
-        outFp.write(str(address))  # 시작오프셋
-        outFp.write(",")
-        outFp.write(str(length))  # 길이
-        outFp.write(",")
-        outFp.write(str(result))
+        #outFp.write(str(address))  # 시작오프셋
+        #outFp.write(",")
+        #outFp.write(str(length))  # 길이
+        #outFp.write(",")
+        #outFp.write(str(result))
         outFp.write("\n")
         length += 1
         inFp.close()
