@@ -24,7 +24,7 @@ def string_hex_to_hex(temps): #string안에 저장된 hex값을 읽어와 쓰게
 def tableread():
     global TBLword
     global TBLhex
-    inFp4=open(tablefile,"r",encoding='utf-16-le')
+    inFp4=open(tablefile,"r",encoding='utf-8)
     while True:
         line=inFp4.readline()
         line=line.replace("\n","")

@@ -49,7 +49,6 @@ def foundoffset(inFp):
     result=little_end_to_big_end(inFp)
     inFp.close()
     return int(result,16)
-
 def little_end_to_big_end(inFpset):
     blank=[]
     for i in range(1,5):
@@ -100,16 +99,14 @@ def little_end_to_big_end(inFpset):
     result+=pointer
     result=result.upper()
     return result
-
 def nextoffset(nextoffset):
     inFp3.read(nextoffset)
     result = little_end_to_big_end(inFp3)
     return result
-
 def tableread():
     global TBLword
     global TBLhex
-    inFp4=open(tablefile,"r",encoding='utf-16-le')
+    inFp4=open(tablefile,"r",encoding='utf-8')
     while True:
         line=inFp4.readline()
         line=line.replace("\n","")
@@ -189,93 +186,112 @@ if (DEBUG_RELATIVE_OFFSET == 1) or (DEBUG_RELATIVE_ADDRESS==1):
 
 lenscrpit=0
 
-if (DEBUG_RELATIVE_ADDRESS==1):  # 롬 안의 메모리를 읽어오는경우
+if (DEBUG_RELATIVE_ADDRESS == 1):  # 롬 안의 메모리를 읽어오는경우
     inFp3.close()
     inFp3 = open(readfile, "rb")
     inFp3.read(0x4)
-    looptime=int(little_end_to_big_end(inFp3), 16)
+    looptime = int(little_end_to_big_end(inFp3), 16)  # 총 대사길이를 알아냅니다
     inFp.close()
     beforeaddress = 0
-    for kig in range(0,looptime):
+    for kig in range(0, looptime):
         inFp = open(readfile, "rb")
-
-        length = int(little_end_to_big_end(inFp3), 16) #롬의 길이를 읽어냅니다
-        address = int(little_end_to_big_end(inFp3), 16) #롬의 주소값을 알아냅니다
-        inFp.read(address) #열었다 닫았따 하기때문에 바로 주소에서 읽어내도 상관이 없습니다
-        result=inFp.read(length)
-        result=str(result)
-        result=result[2:-1]
-        foundregester=0
-        lenresult=result
-        result=result.replace("\\'","'")
-        for i in range(0,len(lenresult)): #대사에서 TBL에 있는 것들을 검색해야합니다.
-            #i +=(foundregester*(-1))
+        length = int(little_end_to_big_end(inFp3), 16)  # 롬의 길이를 읽어냅니다
+        address = int(little_end_to_big_end(inFp3), 16)  # 롬의 주소값을 알아냅니다
+        inFp.read(address)  # 열었다 닫았따 하기때문에 바로 주소에서 읽어내도 상관이 없습니다
+        result = inFp.read(length)
+        result = str(result)
+        result = result[2:-1]
+        foundregester = 0
+        lenresult = result
+        result = result.replace("\\'", "'")
+        for i in range(0, len(lenresult)):  # 대사에서 TBL에 있는 것들을 검색해야합니다.
+            # i +=(foundregester)
             try:
-                if((result[i]) == ('\\') and not result[i:i+2] == ('\\n')): #검색한것이 줄띄어쓰기가 아니고 ASCII코드에 없는경우
-                    if not(result[i:i+4] == str('\\x00')) and not (result[i:i+4] == "\\xc") and not (result[i:i+4]==str(b'\xa0')): #특수한 경우를 제외합니다
 
-                        #------------------3바이트, 2바이트, 1바이트 차례를 읽어와 테이블과 대조해야합니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        foundregester+=1 #왜 추가해야되는지 몰겠어요 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ
-                        for t in range(0,3):
+                if ((result[i]) == ('\\') and not result[i:i + 2] == ('\\n') and not result[i:i + 2] == (
+                "\\\\")):  # 검색한것이 줄띄어쓰기가 아니고 ASCII코드에 없는경우
+                    if not (result[i:i + 4] == str('\\x00')) and not (result[i:i + 4] == "\\xc") and not (
+                        result[i:i + 4] == str(b'\xa0')):  # 특수한 경우를 제외합니다
+
+                        # ------------------3바이트, 2바이트, 1바이트 차례를 읽어와 테이블과 대조해야합니다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        check = 0
+
+                        for t in range(0, 3):
                             tblresult = ""  # tbl 찾는값
-                            tblresult = result[i:i + (12-4*t)] #3바이트 2바이트 1바이트 차례로 읽어옴 읽어오기
+                            tblresult = result[i:i + (12 - 4 * t)]  # 3바이트 2바이트 1바이트 차례로 읽어옴 읽어오기
                             tblresult = tblresult.replace("'", "")
                             tblresult = tblresult.replace("x", "")
+                            # print("tblresult")
+                            # print(tblresult)
+                            # if(tblresult in "\\\\"): #만~~~약에 찾으려 했던 값이 \였으면
+                            #    print("HIHIHIHIHI")
+                            #    tblresult.replace('\\\\','\\')
+                            #    foundregister+=1
+                            #    check=1
+                            #    time.sleep(10)
+                            #    break
+                            #
                             tblresult = tblresult.replace("\\", "")
                             tblresult = tblresult.upper()  # 테이블 파일을 읽기위해 3바이트 HEX로 치환
-                            check = 0
+
                             for k in range(0, len(TBLhex)):  # 3바이트 HEX가     테이블파일에 있는지 검사
                                 if (tblresult == str(TBLhex[k])):
                                     tblresult = str(TBLword[k])
+                                    # foundregester += int(len(TBLhex)/2)  #찾은만큼 오프셋이 옆으로 이동해야하므로 추가합니다
                                     check = 1
                                     break
-                            if(check==1):
+                            if (check == 1):
                                 break
+
                         if (check == 0):
-                            talk = "TBL FILE CANNOT FOUND HEX CODES IN SCRPIT! HEX CODE ::  "
+                            talk = "TBL FILE CANNOT FOUND HEX CODES IN SCRPIT! HEX CODE ->"
                             talk += tblresult
                             print(talk)
                             print("10초 후 계속됩니다.")
                             time.sleep(10)
-                            break
-                        temp0=result[0:i] #문자열을 두 부분으로 나눈다음 가운데를 방금 찾은 테이블표 값을 입력한후 다시 합칩니다.
-                        temp1=result[i+12-4*t:len(result)]
-                        result=""
-                        result+=temp0
-                        result+=tblresult
-                        result+=temp1
 
+                        temp0 = result[0:i]  # 문자열을 두 부분으로 나눈다음 가운데를 방금 찾은 테이블표 값을 입력한후 다시 합칩니다.
+                        temp1 = result[i + 12 - 4 * t:len(result)]
+                        result = ""
+                        result += temp0
+                        result += tblresult
+                        result += temp1
+
+                        # print(result)
                     else:
-                        length+=1
+                        length += 1
+
             except:
                 break
         print(result)
-        address=str(hex(address))
-        address=address.replace("x","")
-        address=address.upper()
-        if(len(address)==1):
-            address="0000000"+address
-        if(len(address)==2):
-            address="000000"+address
-        if(len(address)==3):
-            address="00000"+address
-        if(len(address)==4):
-            address="0000"+address
-        if(len(address)==5):
-            address="000"+address
-        if(len(address)==6):
-            address="00"+address
-        if(len(address)==7):
-            address="0"+address
-        #outFp.write(str(address))  # 시작오프셋
-        #outFp.write(",")
-        #outFp.write(str(length))  # 길이
-        #outFp.write(",")
-        #outFp.write(str(result))
+        address = str(hex(address))
+        address = address.replace("x", "")
+        address = address.upper()
+        if (len(address) == 1):
+            address = "0000000" + address
+        if (len(address) == 2):
+            address = "000000" + address
+        if (len(address) == 3):
+            address = "00000" + address
+        if (len(address) == 4):
+            address = "0000" + address
+        if (len(address) == 5):
+            address = "000" + address
+        if (len(address) == 6):
+            address = "00" + address
+        if (len(address) == 7):
+            address = "0" + address
+        if ('\\\\') in result:
+            result = result.replace("\\\\", "\\")  # \\이 써진걸 \로 바꿉니다
+        # outFp.write(str(address))  # 시작오프셋
+        # outFp.write(",")
+        # outFp.write(str(length))  # 길이
+        # outFp.write(",")
+        outFp.write(str(result))
         outFp.write("\n")
         length += 1
         inFp.close()
-        lenscrpit+=1
+        lenscrpit += 1
 if(DEBUG_RELATIVE_ADDRESS==0):
     while True:
         s = inFp.read(1) #한칸한칸 읽어 대사의 마지막까지 검사합니다.
