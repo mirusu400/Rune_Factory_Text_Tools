@@ -20,7 +20,7 @@ import binascii
 import struct
 import os
 
-tablefile="수정UTF_일어_대사추출.tbl"
+tablefile="수정UTF_수정_실전_대사삽입용.tbl"
 NULLBYTES = "00"
 TBLhex=[]
 TBLword=[]
@@ -38,8 +38,12 @@ def readTBL(TBL):
         line = line.replace("\n","")
         line = line.replace(u"\ufeff", '')  # BOM고유오류 조정
         line = line.split("=")
+        if line == ['']:
+            continue
         TBLword.append(line[1])
         TBLhex.append(line[0])
+    print(TBLword)
+    print(TBLhex)
     return
 
 def string_hex_to_hex(str, dst):
@@ -53,7 +57,7 @@ try:
 except IndexError:
     writefile=readfile
     writefile+=".out"
-readTBL("C:/Pythonproj/Rune_Factory_Text_Tools/수정UTF_일어_대사추출.tbl")
+readTBL(tablefile)
 
 inFp=open(readfile,"r",encoding="utf-8")
 outFp=open(writefile,"wb")
@@ -63,6 +67,7 @@ lineIndex = int(inFp.readline())
 for i in range(0,lineIndex):
     WriteHex = ""
     line = inFp.readline().replace("\n","")
+    print(line)
     for j in range(0,len(line)):
         try:
             Temp = TBLword.index(line[j])
@@ -84,4 +89,5 @@ for i in range(0,lineIndex):
 
 for i in range(0,lineIndex):
     string_hex_to_hex(WriteHexArr[i],outFp)
+inFp.close()
 outFp.close()

@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="770160de-8a89-4072-b2ad-9563b9e775fc" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RFTxtExtract.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RFTxtImport.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Struct.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Rune-Factory-Text-Tools.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Rune-Factory-Text-Tools.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Text_Checker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RF Script INPUT TOOL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deprecated/RF Script INPUT TOOL.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RF Text Dump.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deprecated/RF Text Dump.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RF WQSG Text Dump with TBL.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deprecated/RF WQSG Text Dump with TBL.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RF WQSG Text Dump.py" beforeDir="false" afterPath="$PROJECT_DIR$/Deprecated/RF WQSG Text Dump.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UTF8_JPN.tbl" beforeDir="false" afterPath="$PROJECT_DIR$/UTF8_JPN.tbl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RFTxtImport.py" beforeDir="false" afterPath="$PROJECT_DIR$/RFTxtImport.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/수정UTF_수정_실전_대사삽입용.tbl" beforeDir="false" afterPath="$PROJECT_DIR$/수정UTF_수정_실전_대사삽입용.tbl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -148,7 +139,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/RFTxtImport.py" />
-      <option name="PARAMETERS" value="본대사\rf2mc.jp.txt" />
+      <option name="PARAMETERS" value="본대사\rf2mc.ko.txt" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Text_Checker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Rune-Factory-Text-Tools" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Program Files (x86)\Python36-32\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Text_Checker.py" />
+      <option name="PARAMETERS" value="G:\3DP\rf3mc.eng G:\3DP\rf3mc.eng.txt G:\3DP\UTF8_JPN.tbl" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -182,10 +194,12 @@
       <item itemvalue="Python.1000" />
       <item itemvalue="Python.RFTxtExtract" />
       <item itemvalue="Python.RFTxtImport" />
+      <item itemvalue="Python.Text_Checker" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.RFTxtImport" />
+        <item itemvalue="Python.Text_Checker" />
         <item itemvalue="Python.RFTxtExtract" />
         <item itemvalue="Python.RF WQSG Text Dump with TBL" />
         <item itemvalue="Python.1000" />
@@ -214,30 +228,30 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="676" y="133" key="#RF_WQSG_Text_Dump_with_TBL/0.0.1920.1040@0.0.1920.1040" timestamp="1580891824884" />
-    <state x="600" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580986089900">
+    <state x="600" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580987309886">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="600" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1580986089900" />
+    <state x="600" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1580987309886" />
     <state x="740" y="225" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1580891729416">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="225" key="#com.intellij.ide.macro.MacrosDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1580891729416" />
-    <state width="1899" height="229" key="GridCell.Tab.0.bottom" timestamp="1580986338338">
+    <state width="1899" height="229" key="GridCell.Tab.0.bottom" timestamp="1580991330894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1580986338338" />
-    <state width="1899" height="229" key="GridCell.Tab.0.center" timestamp="1580986338338">
+    <state width="1899" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1580991330894" />
+    <state width="1899" height="229" key="GridCell.Tab.0.center" timestamp="1580991330893">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="229" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1580986338338" />
-    <state width="1899" height="229" key="GridCell.Tab.0.left" timestamp="1580986338338">
+    <state width="1899" height="229" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1580991330893" />
+    <state width="1899" height="229" key="GridCell.Tab.0.left" timestamp="1580991330893">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="229" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1580986338338" />
-    <state width="1899" height="229" key="GridCell.Tab.0.right" timestamp="1580986338338">
+    <state width="1899" height="229" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1580991330893" />
+    <state width="1899" height="229" key="GridCell.Tab.0.right" timestamp="1580991330893">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="229" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1580986338338" />
+    <state width="1899" height="229" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1580991330893" />
     <state x="461" y="162" key="SettingsEditor" timestamp="1580964187455">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
