@@ -2,7 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+누락본/
+본대사/
+에러/
+.idea/
 # C extensions
 *.so
 

@@ -118,16 +118,16 @@ def tableread():
         TBLhex.append(line[0])
     print(TBLword)
     print(TBLhex)
-
     return
 
 readfile=sys.argv[1]
 try:
     writefile = sys.argv[2]
-except:
+except IndexError:
     writefile=readfile
     writefile+=".txt"
-tablefile=sys.argv[3]
+tablefile="수정UTF_일어_대사추출.tbl"
+#tablefile=sys.argv[3]
 inFp=0
 texts=[]
 
