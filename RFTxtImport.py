@@ -20,55 +20,68 @@ import binascii
 import struct
 import os
 
-tablefile="수정UTF_수정_실전_대사삽입용.tbl"
-NULLBYTES = "00"
-TBLhex=[]
-TBLword=[]
-WriteHexArr=[]
-WriteOffsetArr=[]
-WriteLengthArr=[]
+tablefile = "수정UTF_수정_실전_대사삽입용.tbl"
+NULLBYTES = "0000"
+TBLhex = []
+TBLword = []
+WriteHexArr = []
+WriteOffsetArr = []
+WriteLengthArr = []
+
+
 def readTBL(TBL):
     global TBLword
     global TBLhex
-    file=open(TBL,"r",encoding='utf-8')
+    file = open(TBL, "r", encoding='utf-8')
     lines = file.readlines()
     for line in lines:
         if line == "":
             continue
-        line = line.replace("\n","")
-        line = line.replace(u"\ufeff", '')  # BOM고유오류 조정
-        line = line.split("=")
-        if line == ['']:
-            continue
-        TBLword.append(line[1])
-        TBLhex.append(line[0])
+        if line.count("=") == 2:
+            line = line.split("=")
+            TBLword.append("=")
+            TBLhex.append(line[0])
+        else:
+            line = line.replace("\n", "")
+            line = line.replace(u"\ufeff", '')  # BOM고유오류 조정
+            line = line.split("=")
+
+            if line == ['']:
+                continue
+            TBLword.append(line[1])
+            TBLhex.append(line[0])
     print(TBLword)
     print(TBLhex)
     return
 
+
 def string_hex_to_hex(str, dst):
-    for i in range(0, int(len(str)/2)):
+    for i in range(0, int(len(str) / 2)):
         outtemp = int(str[i * 2:i * 2 + 2], 16)
         outtemp2 = struct.pack("B", outtemp)
         dst.write(outtemp2)
-readfile=sys.argv[1]
+
+
+readfile = sys.argv[1]
 try:
     writefile = sys.argv[2]
 except IndexError:
-    writefile=readfile
-    writefile+=".out"
+    writefile = readfile
+    writefile += ".out"
 readTBL(tablefile)
 
-inFp=open(readfile,"r",encoding="utf-8")
-outFp=open(writefile,"wb")
+inFp = open(readfile, "r", encoding="utf-8")
+outFp = open(writefile, "wb")
 
-lineIndex = int(inFp.readline())
-
-for i in range(0,lineIndex):
+lineIndex = (inFp.readline())
+print(lineIndex)
+lineIndex = int(lineIndex.replace(u"\ufeff", ''))
+for i in range(0, lineIndex):
+    print("%d of %d"%(i+1,lineIndex))
     WriteHex = ""
-    line = inFp.readline().replace("\n","")
+    line = inFp.readline().replace("\\n", "&").replace("\n", "")
     print(line)
-    for j in range(0,len(line)):
+    for j in range(0, len(line)):
         try:
             Temp = TBLword.index(line[j])
             WriteHex += TBLhex[Temp]
@@ -78,16 +91,24 @@ for i in range(0,lineIndex):
     WriteHexArr.append(WriteHex)
     if i == 0:
         WriteOffsetArr.append(0x08 + (lineIndex * 0x08))
+    # Different Types
     else:
-        WriteOffsetArr.append(WriteOffsetArr[i-1] + WriteLengthArr[i-1] + 1)
-    WriteLengthArr.append((len(WriteHex) // 2) - 1)
+        if NULLBYTES == "0000":
+            WriteOffsetArr.append(WriteOffsetArr[i - 1] + WriteLengthArr[i - 1] + 2)
+        else:
+            WriteOffsetArr.append(WriteOffsetArr[i - 1] + WriteLengthArr[i - 1] + 1)
+    if NULLBYTES == "0000":
+        WriteLengthArr.append((len(WriteHex) // 2) - 2)
+    else:
+        WriteLengthArr.append((len(WriteHex) // 2) - 1)
 outFp.write("TEXT".encode('ascii'))
-outFp.write(struct.pack("<I",lineIndex))
-for i in range(0,lineIndex):
+outFp.write(struct.pack("<I", lineIndex))
+for i in range(0, lineIndex):
     outFp.write(struct.pack("<I", WriteLengthArr[i]))
     outFp.write(struct.pack("<I", WriteOffsetArr[i]))
-
-for i in range(0,lineIndex):
-    string_hex_to_hex(WriteHexArr[i],outFp)
+print(WriteHexArr)
+# input()
+for i in range(0, lineIndex):
+    string_hex_to_hex(WriteHexArr[i], outFp)
 inFp.close()
 outFp.close()
