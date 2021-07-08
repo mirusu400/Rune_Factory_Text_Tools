@@ -12,6 +12,13 @@ You need to manually change `encoding table files` in python script.
 
 You need to manually change `encoding table files` in python script.
 
+Also, set your `NULLBYTES` for builds. For example, on RF2 and some RF3 script files are use 1-byte `NULLBYTES(00)` after text ends, but RF3 main script use 2-bytes `NULLBYTES(0000)` after text ends. you should change your `NULLBYTES` before use.
+
+```diff
+-- NULLBYTES = 0000
+++ NULLBYTES = 00
+```
+
 ## Table File?
 For localization, we use specific table file. RF uses utf-8 encodings, so you need to use UTF-8 encoding table file. Such as: `UTF8_JPN.tbl`
 
