@@ -19,9 +19,22 @@ import sys
 import binascii
 import struct
 import os
-NULLBYTES = "0000"
-tblfile = None
+NULLBYTES = "00"
 tbldict = {}
+tbldict[" "] = "20"
+tbldict["　"] = "E38080"
+replacedict = {
+    "A": "Ａ", "B": "Ｂ", "C": "Ｃ", "D": "Ｄ", "E": "Ｅ", "F": "Ｆ", "G": "Ｇ",
+    "H": "Ｈ", "I": "Ｉ", "J": "Ｊ", "K": "Ｋ", "L": "Ｌ", "M": "Ｍ", "N": "Ｎ",
+    "O": "Ｏ", "P": "Ｐ", "Q": "Ｑ", "R": "Ｒ", "S": "Ｓ", "T": "Ｔ", "U": "Ｕ",
+    "V": "Ｖ", "W": "Ｗ", "X": "Ｘ", "Y": "Ｙ", "Z": "Ｚ", "a": "ａ", "b": "ｂ",
+    "c": "ｃ", "d": "ｄ", "e": "ｅ", "f": "ｆ", "g": "ｇ", "h": "ｈ", "i": "ｉ",
+    "j": "ｊ", "k": "ｋ", "l": "ｌ", "m": "ｍ", "n": "ｎ", "o": "ｏ", "p": "ｐ",
+    "q": "ｑ", "r": "ｒ", "s": "ｓ", "t": "ｔ", "u": "ｕ", "v": "ｖ", "w": "ｗ",
+    "x": "ｘ", "y": "ｙ", "z": "ｚ", "0":"０", "1":"１", "2":"２", "3":"３",
+    "4":"４", "5":"５", "6":"６", "7":"７", "8":"８", "9":"９",
+}
+replacestr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 hexlist = []
 valuelist = []
 index=0
@@ -30,11 +43,10 @@ offsets=[]
 
 
 def readtable(tbl):
-    global tblfile
     global tbldict
     global hexlist
     global valuelist
-    with open(tblfile, "r", encoding="utf-8") as f:
+    with open(tbl, "r", encoding="utf-8") as f:
         lines = f.readlines()
         for line in lines:
             line = line.strip()
@@ -47,7 +59,7 @@ def readtable(tbl):
                 _word = "="
             else: _hex, _word = line.split("=")
             _hex = _hex.upper()
-            tbldict[_hex] = _word
+            tbldict[_word] = _hex
     hexlist = list(tbldict)
     valuelist = list(tbldict.values())
     return
@@ -59,7 +71,6 @@ def write(_in, _out):
     hexs = []
     lines = _in.readlines()
     tlines = []
-    
     # Temporary save hexes on array
     for line in lines:
         line = line.strip()
@@ -67,24 +78,31 @@ def write(_in, _out):
             continue
         else:
             tlines.append(line)
-    index = len(line)
+    index = len(tlines)
+    print(index)
     for i in range(index):
-        line = lines[i].replace("\\n", "_")
+        line = lines[i].replace("\\n", "_").replace("\n","").replace(u"\xa0"," ")
         thex = ""
         for j in line:
             try:
-                key = valuelist.index(j)
-                thex += hexlist[key]
+                if j in replacestr:
+                    char = replacedict[j]
+                else:
+                    char = j
+                # key = valuelist.index(j)
+                # print(j, tbldict[j])
+                thex += tbldict[char]
             except:
+                print(line)
                 raise
         thex += NULLBYTES
         hexs.append(thex)
         if i == 0:
             offsets.append(8 + (index*8))
         else:
-            offsets.append(offsets[i-1] + length[i-1] + (len(NULLBYTES) // 2))
+            offsets.append(offsets[i-1] + lengths[i-1] + (len(NULLBYTES) // 2))
 
-        lengths.append((len(thexs) // 2) + (len(NULLBYTES) // 2))
+        lengths.append((len(thex) // 2) - (len(NULLBYTES) //2 ))
     
     # Write 
     _out.write("TEXT".encode("ascii"))
@@ -92,7 +110,8 @@ def write(_in, _out):
     
     for i in range(index):
         _out.write(struct.pack("<I", lengths[i]))
-        _out.write(struct.pack("<I", lengths[i]))
+        _out.write(struct.pack("<I", offsets[i
+        ]))
     
     for i in range(index):
         _out.write(shex2bhex(hexs[i]))
@@ -105,14 +124,14 @@ if __name__ == "__main__":
     try:
         outfile = sys.argv[2]
     except:
-        outfile = infile + ".txt"
+        outfile = infile + ".out"
     try:
         tblfile = sys.argv[3]
     except:
         tblfile = input("Select tbl file")
-    
-    instream = open(infile, "w", encoding="utf-8")
+    readtable(tblfile)
+    instream = open(infile, "r", encoding="utf-8")
     outstream = open(outfile, "wb")
-    write(instrea, outstream)
+    write(instream, outstream)
     instream.close()
     outstream.close()

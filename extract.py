@@ -73,15 +73,15 @@ def write(_in, _out):
                 _hex += binascii.hexlify(_in.read(2)).decode("utf-8").upper()
                 try:
                     output += tbldict[_hex]
-                    except ValueError:
-                        if _in.tell() >= offset + length:
-                            break
-                        else:
-                            print(output)
-                            print("UnExcepted Error! Maybe the hex is not in table")
-                            print("Hex : " + _hex)
-                            input()
-                            raise
+                except ValueError:
+                    if _in.tell() >= offset + length:
+                        break
+                    else:
+                        print(output)
+                        print("UnExcepted Error! Maybe the hex is not in table")
+                        print("Hex : " + _hex)
+                        input()
+                        raise
         _out.write(output)
         _out.write("\n")
         
