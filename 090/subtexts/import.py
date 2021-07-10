@@ -19,7 +19,7 @@ import sys
 import binascii
 import struct
 import os
-NULLBYTES = "00"
+NULLBYTES = "0000"
 tbldict = {}
 tbldict[" "] = "20"
 tbldict["　"] = "E38080"
@@ -85,12 +85,12 @@ def write(_in, _out):
         thex = ""
         for j in line:
             try:
-                if j in replacestr:
-                   char = replacedict[j]
-                else:
-                   char = j
-                #char = j
-                # print(char, tbldict[char])
+                # if j in replacestr:
+                #    char = replacedict[j]
+                # else:
+                #    char = j
+                char = j
+                #print(char, tbldict[char])
                 thex += tbldict[char]
             except:
                 print(line)
