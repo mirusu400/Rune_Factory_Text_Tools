@@ -1,0 +1,1 @@
+for %%i in (./subtext/*.txt) do import.py ./subtext/%%i ./subtext/%%i.text UTF8_JPN_TO_KOR_v091.tbl
