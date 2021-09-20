@@ -19,6 +19,12 @@ import sys
 import binascii
 import struct
 import os
+
+# NULLBYTES
+# 룬팩토리2는 항상 00 이고
+# 룬팩토리3는 메인대사는 00,
+# 그 외 대사는 0000 으로 하면 됩니다.
+
 NULLBYTES = "00"
 tbldict = {}
 tbldict[" "] = "20"
@@ -86,14 +92,15 @@ def write(_in, _out):
         for j in line:
             try:
                 if j in replacestr:
-                   char = replacedict[j]
+                    char = replacedict[j]
                 else:
-                   char = j
-                #char = j
-                # print(char, tbldict[char])
+                    char = j
+                # key = valuelist.index(j)
+                # print(j, tbldict[j])
                 thex += tbldict[char]
             except:
                 print(line)
+                print("알 수 없는 에러! 특정한 글자가 테이블에 없습니다.")
                 raise
         thex += NULLBYTES
         hexs.append(thex)
@@ -120,7 +127,7 @@ if __name__ == "__main__":
     try:
         infile = sys.argv[1]
     except:
-        infile = input("Select input file")
+        infile = input("텍스트 파일을 선택해주세요\n")
     try:
         outfile = sys.argv[2]
     except:
@@ -128,7 +135,7 @@ if __name__ == "__main__":
     try:
         tblfile = sys.argv[3]
     except:
-        tblfile = input("Select tbl file")
+        tblfile = input("테이블 파일을 선택해주세요\n")
     readtable(tblfile)
     instream = open(infile, "r", encoding="utf-8")
     outstream = open(outfile, "wb")

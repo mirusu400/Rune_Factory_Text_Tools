@@ -78,7 +78,7 @@ def write(_in, _out):
                         break
                     else:
                         print(output)
-                        print("UnExcepted Error! Maybe the hex is not in table")
+                        print("알 수 없는 에러! 아마 해당하는 문자가 테이블에 없는 오류입니다.")
                         print("Hex : " + _hex)
                         input()
                         raise
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     try:
         infile = sys.argv[1]
     except:
-        infile = input("Select input file")
+        infile = input("파일을 선택해주세요.\n")
     try:
         outfile = sys.argv[2]
     except:
@@ -98,12 +98,12 @@ if __name__ == "__main__":
     try:
         tblfile = sys.argv[3]
     except:
-        tblfile = input("Select tbl file")
+        tblfile = input("테이블 파일을 선택해주세요.\n")
     
     instream = open(infile, "rb")
     outstream = open(outfile, "w", encoding="utf-8")
     readheader(instream)
-    write(instrea, outstream)
+    write(instream, outstream)
     instream.close()
     outstream.close()
         
