@@ -26,9 +26,11 @@ import os
 # 그 외 대사는 0000 으로 하면 됩니다.
 
 NULLBYTES = "00"
+REPLACE = False
 tbldict = {}
 tbldict[" "] = "20"
 tbldict["　"] = "E38080"
+tbldict["="] = "3D"
 replacedict = {
     "A": "Ａ", "B": "Ｂ", "C": "Ｃ", "D": "Ｄ", "E": "Ｅ", "F": "Ｆ", "G": "Ｇ",
     "H": "Ｈ", "I": "Ｉ", "J": "Ｊ", "K": "Ｋ", "L": "Ｌ", "M": "Ｍ", "N": "Ｎ",
@@ -38,9 +40,15 @@ replacedict = {
     "j": "ｊ", "k": "ｋ", "l": "ｌ", "m": "ｍ", "n": "ｎ", "o": "ｏ", "p": "ｐ",
     "q": "ｑ", "r": "ｒ", "s": "ｓ", "t": "ｔ", "u": "ｕ", "v": "ｖ", "w": "ｗ",
     "x": "ｘ", "y": "ｙ", "z": "ｚ", "0":"０", "1":"１", "2":"２", "3":"３",
-    "4":"４", "5":"５", "6":"６", "7":"７", "8":"８", "9":"９",
+    "4":"４", "5":"５", "6":"６", "7":"７", "8":"８", "9":"９", ":":"：", "·":"･",
 }
-replacestr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+replacedict_to_2byte = {
+    "？": "?", "！": "!", "（": "(", "）": ")", "，": ",", "．": ".",
+    "：": ":", "；": ";",
+    "。": ".", "、": ","
+}
+replacestr_2byte = "？！（），．：；？。、"
+replacestr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:"
 hexlist = []
 valuelist = []
 index=0
@@ -91,10 +99,18 @@ def write(_in, _out):
         thex = ""
         for j in line:
             try:
-                if j in replacestr:
-                    char = replacedict[j]
+                if REPLACE:
+                    if j in replacestr:
+                        char = replacedict[j]
+                    elif j in replacestr_2byte:
+                        char = replacedict_to_2byte[j]
+                    else:
+                        char = j
                 else:
-                    char = j
+                    if j in replacestr_2byte:
+                        char = replacedict_to_2byte[j]
+                    else:
+                        char = j
                 # key = valuelist.index(j)
                 # print(j, tbldict[j])
                 thex += tbldict[char]
