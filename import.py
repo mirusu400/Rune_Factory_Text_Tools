@@ -48,7 +48,7 @@ replacedict_to_2byte = {
     "。": ".", "、": ","
 }
 replacestr_2byte = "？！（），．：；？。、"
-replacestr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:"
+replacestr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:·"
 hexlist = []
 valuelist = []
 index=0
