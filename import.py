@@ -26,7 +26,7 @@ import os
 # 그 외 대사는 0000 으로 하면 됩니다.
 
 NULLBYTES = "00"
-REPLACE = False
+REPLACE = True
 tbldict = {}
 tbldict[" "] = "20"
 tbldict["　"] = "E38080"
